@@ -1,0 +1,18 @@
+public class Jdbc {
+    //mydb是我自己建的数据库
+    //user=root 我自己数据库的用户名
+    //password=wizardfu 我自己的数据库的密码
+    public static final String URL = "jdbc:mysql://localhost/mydb?" +
+            "user=root&password=wizardfu";
+    public static void main(String[] args) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            DriverManager.getConnection(URL);
+            System.out.println("成功加载MYSQL驱动");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}

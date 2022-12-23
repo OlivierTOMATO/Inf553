@@ -1,0 +1,88 @@
+package edu.polytechnique.inf553;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+ 
+public class DBUtil {
+ 
+	private static final String URL = "jdbc:mysql://localhost:3306/lee?useUnicode=true&characterEncoding=utf-8";
+	private static final String USERNAME = "root";
+	private static final String PASSWORD = "123456";
+	
+	public static Connection con = null;
+	public static PreparedStatement pstmt = null;
+	public static ResultSet rs = null;
+	
+
+	public static Connection getConnection() throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		return DriverManager.getConnection(URL,USERNAME,PASSWORD);
+	}
+	
+
+	public static PreparedStatement createPstmt(String sql,Object[] params) throws ClassNotFoundException, SQLException {
+		pstmt = getConnection().prepareStatement(sql);
+		if(params != null) {
+			for(int i = 0; i < params.length; i++) {
+				pstmt.setObject(i+1, params[i]);
+			}
+		}
+		return pstmt;
+	}
+	
+	//关闭数据库
+	public static void closeAll(ResultSet rs, Statement stmt, Connection con) {
+		try {
+			if(rs != null)
+				rs.close();
+			if(stmt != null)
+				stmt.close();
+			if(con != null)
+				con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//获取数据总数
+	public static int getCount(String sql) {
+		int count = -1;
+		try {
+			pstmt = createPstmt(sql, null);
+			rs = pstmt.executeQuery();
+			if(rs.next())
+				count = rs.getInt(1);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(rs, pstmt, con);
+		}
+		return count;
+	}
+	
+	
+	//通用查询
+	public static ResultSet executeQuery(String sql, Object[] params) {
+		try {
+			pstmt = createPstmt(sql,params);
+			return pstmt.executeQuery();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} 
+	}
+}

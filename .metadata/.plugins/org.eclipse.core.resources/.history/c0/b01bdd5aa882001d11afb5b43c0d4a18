@@ -1,0 +1,111 @@
+package edu.polytechnique.inf553;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class QueryServlet
+ */
+@WebServlet(
+		urlPatterns = { "/QueryServlet" }, 
+		initParams = { 
+				@WebInitParam(name = "year", value = "", description = "A year on which the query is based")
+		})
+public class QueryServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public QueryServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.setContentType("text/html;charset=UTF-8");
+//		
+		System.out.print(request.getParameter("year"));
+        int year = Integer.parseInt(request.getParameter("year"));
+        if(year >= 2050) {
+        	throw new IllegalArgumentException("Year should be smaller than 2050");
+        }
+		Connection con;
+		PreparedStatement st;
+		ResultSet rs;
+		
+		String url="jdbc:postgresql://localhost:5432/postgres";
+		String user="linzhuoyao"; 
+		String password="admin";
+		try {
+		Class.forName("org.postgresql.Driver");
+
+		con=DriverManager.getConnection(url,user,password);
+		String sql = "SELECT p.id, p.name, count(*)\r\n"
+				+ "				FROM cast_info AS c, person AS p, movie AS m, role_type AS r\r\n"
+				+ "				WHERE c.person_id = p.id\r\n"
+				+ "				and c.movie_id = m.id\r\n"
+				+ "				and c.role_id = r.id\r\n"
+				+ "				and( r.role = 'actor' \r\n"
+				+ "				or  r.role = 'actress')\r\n"
+				+ "				and m.production_year = ?\r\n"
+				+ "				group by p.id limit 1000";
+		st=con.prepareStatement(sql);
+		st.setInt(1, year);
+		rs = st.executeQuery();
+		
+		response.getWriter().append("<table border=1 align=center>");
+		response.getWriter().append("  <tr>\r\n"
+				+ "    <td>id</td>\r\n"
+				+ "    <td>name</td>\r\n"
+				+ "    <td>number</td>\r\n"
+				+ "  </tr>");
+//		response.getWriter().append("<result>");
+		while(rs.next()) {
+//			System.out.println(rs.getInt(1));
+			response.getWriter().append("  <tr>\r\n"
+					+ "    <td>" + rs.getInt(1) + "</td>\r\n"
+					+ "    <td> <a name='name' href = 'http://localhost:8080/inf553-web/PersonServlet?id=" + rs.getInt(1) + "'>" + rs.getInt(2) + ""</td>\r\n"
+					+ "    <td>" + rs.getInt(3)+ "</td>\r\n"
+					+ "  </tr>");
+//			response.getWriter().append("<row>");
+//			response.getWriter().append("<id>");
+//			response.getWriter().append(rs.getString(1));
+//			response.getWriter().append("</id>");
+//			response.getWriter().append("<a name='name' href = 'http://localhost:8080/inf553-web/PersonServlet?id=" + rs.getInt(1) + "'>");
+//			response.getWriter().append(rs.getString(2));
+//			response.getWriter().append("</a>");
+//			response.getWriter().append(rs.getString(3));
+//			response.getWriter().append("</number>");
+//			response.getWriter().append("</row>");
+//			response.getWriter().append("<br>");
+		}
+		response.getWriter().append("</table>");
+
+//		response.getWriter().append("</result>");
+		rs.close();
+		st.close();
+		con.close();
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.print("error");
+		}finally {
+		}
+	}
+
+}

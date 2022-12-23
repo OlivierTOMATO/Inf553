@@ -1,0 +1,84 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Query Result</title>
+ 
+<style>
+td{
+	width:100px;
+}
+th{
+	width:100px;
+}
+ 
+</style>
+ 
+</head>
+<body>
+ 
+	<h2>Films</h2>
+	<table border="1">
+		<tr>
+			<th>学号</th>
+			<th>姓名</th>
+			<th>年龄</th>
+			<th>地址</th>
+		</tr>
+		<%
+			Page sPage = (Page)request.getAttribute("page");
+			for(Student student : sPage.getStudent()){	
+		%>
+			<tr>
+				<td><%=student.getNo() %></td>
+				
+				<td><%=student.getName() %></td>
+				
+				<td><%=student.getAge() %></td>
+				<td><%=student.getAddress() %></td>
+			</tr>
+		<%
+			}
+		%>
+		
+		
+	</table>
+	<br>
+	
+	<%
+		if(sPage.getCurrentPage() == sPage.getTotalPage()){
+	%>
+			<a href="QueryStudentByPage?currentPage=1&pageSize=<%=sPage.getPageSize()%>">首页</a>
+			<a href="QueryStudentByPage?currentPage=<%=sPage.getCurrentPage()-1%>&pageSize=<%=sPage.getPageSize()%>">上一页</a>
+	<%
+		}else if(sPage.getCurrentPage() == 1){
+	%>
+			<a href="QueryStudentByPage?currentPage=<%=sPage.getCurrentPage()+1%>&pageSize=<%=sPage.getPageSize()%>">下一页</a>
+			<a href="QueryStudentByPage?currentPage=<%=sPage.getTotalPage()%>&pageSize=<%=sPage.getPageSize()%>">尾页</a>
+	<%
+		}else{
+	%>
+			<a href="QueryStudentByPage?currentPage=1">首页</a>
+			<a href="QueryStudentByPage?currentPage=<%=sPage.getCurrentPage()-1%>&pageSize=<%=sPage.getPageSize()%>">上一页</a>
+			<a href="QueryStudentByPage?currentPage=<%=sPage.getCurrentPage()+1%>&pageSize=<%=sPage.getPageSize()%>">下一页</a>
+			<a href="QueryStudentByPage?currentPage=<%=sPage.getTotalPage()%>&pageSize=<%=sPage.getPageSize()%>">尾页</a>
+	<%
+		}
+	%>
+	
+	<br>
+	<form action="QueryStudentByPage">
+	每页显示
+		<select name="pageSize">
+			<option value="3">3</option>
+			<option value="5">5</option>
+			<option value="7">7</option>
+			<option value="10">10</option>
+		</select>
+		条数据
+		<input type="submit" value="确定">
+	</form>
+</body>
+</html>
