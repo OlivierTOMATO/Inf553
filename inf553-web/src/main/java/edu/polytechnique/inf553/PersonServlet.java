@@ -37,7 +37,7 @@ public class PersonServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html;charset=UTF-8");
-		String url = "jdbc:postgresql://localhost:5432/postgres";
+		String url = "jdbc:postgresql://129.104.244.43:5432/postgres";
 		String user = "linzhuoyao";
 		String password = "admin";
 
@@ -92,25 +92,31 @@ public class PersonServlet extends HttpServlet {
 				
 //				response.getWriter().append(rs.getInt(1) + " " + rs.getString(2) + "<br>");
 				response.getWriter().append("<row>");
-				response.getWriter().append("<film id>");
-				response.getWriter().append(rs.getInt(1) + " ");
-				response.getWriter().append("</film id>");
-				response.getWriter().append("<film name>");
-				response.getWriter().append(rs.getString(2));
-				response.getWriter().append("</film name>");
+				response.getWriter().append("Played films:");
 				response.getWriter().append("</row>");
-				response.getWriter().append("<br>");
+				response.getWriter().append("<table border=1 align=center>");
+				response.getWriter().append("  <tr>\r\n" + "    <td>Film ID</td>\r\n" + "    <td>File Name</td>\r\n" + "</tr>");
+				
+				response.getWriter().append("  <tr>\r\n");
+				response.getWriter().append("<td>");
+				response.getWriter().append(rs.getInt(1) + " ");
+				response.getWriter().append("</td>\r\n");
+				response.getWriter().append("<td>");
+				response.getWriter().append(rs.getString(2));
+				response.getWriter().append("</td>\r\n");
+				response.getWriter().append("</tr>");
+				
+				
 			}
 			while (rs.next()) {
-				response.getWriter().append("<row>");
-				response.getWriter().append("<film id>");
+				response.getWriter().append("  <tr>\r\n");
+				response.getWriter().append("<td>");
 				response.getWriter().append(rs.getInt(1) + " ");
-				response.getWriter().append("</film id>");
-				response.getWriter().append("<film name>");
+				response.getWriter().append("</td>\r\n");
+				response.getWriter().append("<td>");
 				response.getWriter().append(rs.getString(2));
-				response.getWriter().append("</film name>");
-				response.getWriter().append("</row>");
-				response.getWriter().append("<br>");
+				response.getWriter().append("</td>\r\n");
+				response.getWriter().append("</tr>");
 //				response.getWriter().append(rs.getInt(1) + " " + rs.getString(2) + "<br>");
 			}
 			response.getWriter().append("</result>");

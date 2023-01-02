@@ -47,7 +47,7 @@ public class QueryServlet extends HttpServlet {
 		PreparedStatement st;
 		ResultSet rs;
 
-		String url = "jdbc:postgresql://localhost:5432/postgres";
+		String url = "jdbc:postgresql://129.104.244.43:5432/postgres";
 		String user = "linzhuoyao";
 		String password = "admin";
 		try {
@@ -66,7 +66,7 @@ public class QueryServlet extends HttpServlet {
 
 			response.getWriter().append("<p>Movies in " + year + "</p>");
 			response.getWriter().append("<table border=1 align=center>");
-			response.getWriter().append("  <tr>\r\n" + "    <td>id</td>\r\n" + "    <td>name</td>\r\n"
+			response.getWriter().append("  <tr>\r\n" + "    <td>ID</td>\r\n" + "    <td>Name</td>\r\n"
 					+ "    <td>number</td>\r\n" + "  </tr>");
 //		response.getWriter().append("<result>");
 			while (rs.next()) {
